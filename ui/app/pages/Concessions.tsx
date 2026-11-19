@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { IconBadge, fnbIcon } from "../components/icons";
+import { GroupIcon, LocationMarkerIcon, MobileIcon, MoneyIcon } from "@dynatrace/strato-icons";
+import { CardIcon, GaugeIcon, PopcornIcon, StarIcon, TrendUpIcon } from "../components/icons";
 import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { StatusStrip } from "../components/StatusStrip";
@@ -31,19 +34,19 @@ export const Concessions = () => {
 
   return (
     <div>
-      <StatusStrip kicker="Concessions · the margin engine" title="Food & Beverage" />
+      <StatusStrip kicker="Concessions · the margin engine" title="Food & Beverage" icon={<PopcornIcon size={26} />} />
 
       <div className="grid kpis" style={{ marginBottom: 16 }}>
-        <Kpi label="F&B revenue today" value={rm(kpis.fnbRevenue)} accent={brand.gold} sub={`${pct(kpis.fnbRevenue / (kpis.grossRevenue || 1), 0)} of gross`} />
-        <Kpi label="F&B gross profit" value={rm(kpis.fnbProfit)} accent={brand.ok} sub={`${pct(kpis.fnbProfit / (kpis.grossProfit || 1), 0)} of total profit`} />
-        <Kpi label="Spend per head" value={rm(kpis.spendPerHead, { compact: false, decimals: 2 })} accent={brand.gold} />
-        <Kpi label="Attach rate" value={pct(kpis.attachRate, 0)} sub="guests buying any F&B" accent={brand.info} />
-        <Kpi label="Mobile pre-order share" value={pct(preorder, 0)} sub="skips the queue, bigger baskets" accent={brand.red} />
-        <Kpi label="Collector buckets sold" value={n(collectors)} sub="today, all titles" accent={brand.gold} />
+        <Kpi icon={<PopcornIcon />} spark={model.hourly.filter((h) => !h.forecast).map((h) => h.fnb)} label="F&B revenue today" value={rm(kpis.fnbRevenue)} accent={brand.gold} sub={`${pct(kpis.fnbRevenue / (kpis.grossRevenue || 1), 0)} of gross`} />
+        <Kpi icon={<TrendUpIcon />} label="F&B gross profit" value={rm(kpis.fnbProfit)} accent={brand.ok} sub={`${pct(kpis.fnbProfit / (kpis.grossProfit || 1), 0)} of total profit`} />
+        <Kpi icon={<MoneyIcon />} label="Spend per head" value={rm(kpis.spendPerHead, { compact: false, decimals: 2 })} accent={brand.gold} />
+        <Kpi icon={<GroupIcon />} label="Attach rate" value={pct(kpis.attachRate, 0)} sub="guests buying any F&B" accent={brand.info} />
+        <Kpi icon={<MobileIcon />} label="Mobile pre-order share" value={pct(preorder, 0)} sub="skips the queue, bigger baskets" accent={brand.red} />
+        <Kpi icon={<StarIcon />} label="Collector buckets sold" value={n(collectors)} sub="today, all titles" accent={brand.gold} />
       </div>
 
       <div className="grid two" style={{ marginBottom: 16 }}>
-        <Section title="What sells" subtitle="Top items by revenue with gross margin" source={sources.merchandising}>
+        <Section icon={<PopcornIcon />} iconColor={brand.gold} title="What sells" subtitle="Top items by revenue with gross margin" source={sources.merchandising}>
           <div className="scroll-x">
             <table className="boc-table">
               <thead>
@@ -62,8 +65,10 @@ export const Concessions = () => {
                   .map((i) => (
                     <tr key={i.name}>
                       <td style={{ fontWeight: 600 }}>
-                        {i.category === "Collectibles" && <span style={{ color: brand.gold }}>★ </span>}
-                        {i.name}
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                          <IconBadge icon={fnbIcon(i.category, 14)} color={i.category === "Collectibles" ? brand.gold : i.category === "Drinks" ? brand.info : brand.red} size={26} />
+                          {i.name}
+                        </span>
                       </td>
                       <td className="muted">{i.category}</td>
                       <td className="r num">{n(i.units)}</td>
@@ -85,7 +90,7 @@ export const Concessions = () => {
           </div>
         </Section>
 
-        <Section title="Uplift simulator" subtitle="What a small change in guest behaviour is worth per year" source={sources.revenue === "live" ? "live" : "modelled"}>
+        <Section icon={<GaugeIcon />} iconColor={brand.ok} title="Uplift simulator" subtitle="What a small change in guest behaviour is worth per year" source={sources.revenue === "live" ? "live" : "modelled"}>
           <Slider
             label="Spend-per-head uplift"
             value={uplift}
@@ -131,7 +136,7 @@ export const Concessions = () => {
       </div>
 
       <div className="grid two" style={{ marginBottom: 16 }}>
-        <Section title="Site league table" subtitle="Spend-per-head by cinema, with kiosk availability" source={sources.merchandising}>
+        <Section icon={<LocationMarkerIcon />} iconColor={brand.red} title="Site league table" subtitle="Spend-per-head by cinema, with kiosk availability" source={sources.merchandising}>
           <div className="scroll-x">
             <table className="boc-table">
               <thead>
@@ -147,7 +152,12 @@ export const Concessions = () => {
               <tbody>
                 {sites.map((s) => (
                   <tr key={s.name}>
-                    <td style={{ fontWeight: 600 }}>{s.name}</td>
+                    <td style={{ fontWeight: 600 }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                        <LocationMarkerIcon size={16} style={{ color: brand.red }} />
+                        {s.name}
+                      </span>
+                    </td>
                     <td className="muted">{s.region}</td>
                     <td className="r num">{n(s.admissions)}</td>
                     <td>
@@ -155,7 +165,7 @@ export const Concessions = () => {
                         <div style={{ flex: 1 }}>
                           <Bar value={s.sph} max={maxSph} color={brand.gold} />
                         </div>
-                        <span className="num" style={{ fontSize: 12, width: 54, textAlign: "right" }}>
+                        <span className="num" style={{ fontSize: 12, width: 72, textAlign: "right", whiteSpace: "nowrap" }}>
                           RM {s.sph.toFixed(2)}
                         </span>
                       </div>
@@ -171,7 +181,7 @@ export const Concessions = () => {
           </div>
         </Section>
 
-        <Section title="How guests order & pay" subtitle="F&B ordering channel and payment method mix" source={sources.merchandising}>
+        <Section icon={<CardIcon />} iconColor={brand.info} title="How guests order & pay" subtitle="F&B ordering channel and payment method mix" source={sources.merchandising}>
           <div style={{ display: "grid", gap: 20 }}>
             <MixRow title="F&B ordering channel" items={model.fnbOrderChannels} />
             <MixRow title="Payment method" items={model.paymentMix} />

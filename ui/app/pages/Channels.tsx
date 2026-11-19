@@ -1,8 +1,11 @@
 import React from "react";
+import { IconBadge, categoryIcon, channelIcon } from "../components/icons";
+import { AiIcon, MobileIcon } from "@dynatrace/strato-icons";
+import { TicketIcon } from "../components/icons";
 import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { StatusStrip } from "../components/StatusStrip";
-import { HealthDot, Section, healthColor } from "../components/ui";
+import { Section, healthColor } from "../components/ui";
 import { Sparkline } from "../components/charts";
 import { duration, hm, n, pct, rm } from "../components/format";
 import { DrillLink, drill } from "../components/Drill";
@@ -31,7 +34,7 @@ export const Channels = () => {
 
   return (
     <div>
-      <StatusStrip kicker="Guest journey · browse to popcorn" title="Digital Channels" />
+      <StatusStrip kicker="Guest journey · browse to popcorn" title="Digital Channels" icon={<MobileIcon size={26} />} />
 
       <div className="grid thirds" style={{ marginBottom: 16 }}>
         {channels.map((c) => (
@@ -39,7 +42,7 @@ export const Channels = () => {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <HealthDot health={c.health} />
+                  <IconBadge icon={channelIcon(c.id, 20)} color={healthColor(c.health)} size={40} solid={c.health !== "healthy"} />
                   <h3 style={{ fontSize: 16 }}>{c.name}</h3>
                 </div>
                 <p className="muted" style={{ fontSize: 12, marginTop: 4 }}>
@@ -88,7 +91,7 @@ export const Channels = () => {
       </div>
 
       <div className="grid two" style={{ marginBottom: 16 }}>
-        <Section title="Problems & revenue at risk" subtitle="Davis-detected problems, last 24 hours, priced in ringgit" source={sources.tech}>
+        <Section icon={<AiIcon />} iconColor={brand.crit} title="Problems & revenue at risk" subtitle="Davis-detected problems, last 24 hours, priced in ringgit" source={sources.tech}>
           <div className="scroll-x">
             <table className="boc-table">
               <thead>
@@ -114,7 +117,7 @@ export const Channels = () => {
                   <tr key={i.id}>
                     <td>
                       <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        <span className="dot" style={{ background: i.status === "ACTIVE" ? brand.crit : brand.faint }} />
+                        <IconBadge icon={categoryIcon(i.category, 13)} color={i.status === "ACTIVE" ? brand.crit : brand.faint} size={24} />
                         <span style={{ fontWeight: 600 }}>{i.title}</span>
                       </div>
                       <div className="faint" style={{ fontSize: 11, marginTop: 3, paddingLeft: 16 }}>
@@ -145,7 +148,7 @@ export const Channels = () => {
           )}
         </Section>
 
-        <Section title="Booking journey" subtitle="Share of sessions reaching each step today" source={sources.tech === "live" ? "modelled" : "demo"}>
+        <Section icon={<TicketIcon />} iconColor={brand.red} title="Booking journey" subtitle="Share of sessions reaching each step today" source={sources.tech === "live" ? "modelled" : "demo"}>
           <div style={{ display: "grid", gap: 12 }}>
             {funnel.map((s, i) => (
               <div key={s.label}>

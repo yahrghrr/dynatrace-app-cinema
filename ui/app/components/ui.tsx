@@ -1,6 +1,8 @@
 import React from "react";
 import { brand } from "../theme";
 import type { Health, Provenance } from "../data/types";
+import { IconBadge } from "./icons";
+import { Sparkline } from "./charts";
 
 export function SourceTag({ source }: { source: Provenance }) {
   const label = source === "live" ? "Live" : source === "modelled" ? "Modelled" : "Demo";
@@ -39,7 +41,11 @@ export function Section({
   right,
   children,
   style,
+  icon,
+  iconColor,
 }: {
+  icon?: React.ReactNode;
+  iconColor?: string;
   title: string;
   subtitle?: string;
   source?: Provenance;
@@ -50,13 +56,16 @@ export function Section({
   return (
     <div className="card" style={style}>
       <div className="section-title">
-        <div>
-          <h3>{title}</h3>
-          {subtitle && (
-            <p className="muted" style={{ fontSize: 12, marginTop: 4 }}>
-              {subtitle}
-            </p>
-          )}
+        <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+          {icon && <IconBadge icon={icon} color={iconColor ?? brand.red} size={34} />}
+          <div>
+            <h3>{title}</h3>
+            {subtitle && (
+              <p className="muted" style={{ fontSize: 12, marginTop: 4 }}>
+                {subtitle}
+              </p>
+            )}
+          </div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           {right}
@@ -75,7 +84,11 @@ export function Kpi({
   delta,
   accent = brand.red,
   hint,
+  icon,
+  spark,
 }: {
+  icon?: React.ReactNode;
+  spark?: number[];
   label: string;
   value: string;
   sub?: React.ReactNode;
@@ -93,8 +106,13 @@ export function Kpi({
           background: `linear-gradient(180deg, ${accent}, transparent)`,
         }}
       />
-      <div className="eyebrow">{label}</div>
-      <div className="num" style={{ fontSize: 28, fontWeight: 800, marginTop: 8, letterSpacing: "-0.02em" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
+        <div className="eyebrow" style={{ paddingTop: 4 }}>
+          {label}
+        </div>
+        {icon && <IconBadge icon={icon} color={accent} size={34} />}
+      </div>
+      <div className="num" style={{ fontSize: 28, fontWeight: 800, marginTop: 4, letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>
         {value}
       </div>
       <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 6, fontSize: 12, flexWrap: "wrap" }}>
@@ -107,6 +125,11 @@ export function Kpi({
           </span>
         )}
         {sub && <span className="muted">{sub}</span>}
+        {spark && spark.length > 1 && (
+          <span style={{ marginLeft: "auto" }}>
+            <Sparkline values={spark} color={accent} width={64} height={22} />
+          </span>
+        )}
       </div>
     </div>
   );

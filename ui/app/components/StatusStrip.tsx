@@ -4,8 +4,9 @@ import { brand } from "../theme";
 import { hm } from "./format";
 import { SourceTag } from "./ui";
 import { LayarLockup } from "./Logo";
+import { IconBadge } from "./icons";
 
-export function StatusStrip({ title, kicker }: { title: string; kicker: string }) {
+export function StatusStrip({ title, kicker, icon }: { title: string; kicker: string; icon?: React.ReactNode }) {
   const { model, mode, liveLoading, fellBack, liveError, setMode } = useCinema();
   return (
     <div style={{ marginBottom: 18 }}>
@@ -14,10 +15,15 @@ export function StatusStrip({ title, kicker }: { title: string; kicker: string }
           <div style={{ marginBottom: 14 }}>
             <LayarLockup height={36} />
           </div>
-          <div className="eyebrow" style={{ color: brand.red }}>
-            {kicker}
+          <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+            {icon && <IconBadge icon={icon} color={brand.red} size={52} solid />}
+            <div>
+              <div className="eyebrow" style={{ color: brand.red }}>
+                {kicker}
+              </div>
+              <h1 style={{ fontSize: 30, fontWeight: 800, marginTop: 4 }}>{title}</h1>
+            </div>
           </div>
-          <h1 style={{ fontSize: 30, fontWeight: 800, marginTop: 4 }}>{title}</h1>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 12 }}>
           <span className="muted">

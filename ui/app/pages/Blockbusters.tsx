@@ -1,4 +1,7 @@
 import React from "react";
+import { MoneyIcon } from "@dynatrace/strato-icons";
+import { SeatMap } from "../components/SeatMap";
+import { FilmIcon, IconBadge, PopcornIcon, RocketIcon, SeatIcon, TicketIcon, TrendUpIcon } from "../components/icons";
 import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { StatusStrip } from "../components/StatusStrip";
@@ -20,11 +23,15 @@ export const Blockbusters = () => {
   const owFnb = owAdmissions * assumptions.fnbSpendPerHead * 1.25;
   const collectorUplift = doomsday ? doomsday.combo.stock * doomsday.combo.price : 0;
   const capacityGap = readiness.expectedPeakTpm - readiness.testedCapacityTpm;
+  const sessions = [
+    { title: kaiju?.title ?? "Godzilla Minus Zero", hall: "IMAX Hall 1", time: "20:30", occupancy: Math.min(0.95, (kaiju?.occupancy ?? 0.7) + 0.12), seed: 7, accent: kaiju?.accent ?? brand.red, held: 0.07 },
+    { title: "The Hunger Games: Sunrise on the Reaping", hall: "Hall 4 · Recliners", time: "21:15", occupancy: 0.68, seed: 21, accent: "#FFB347", held: 0.05 },
+  ];
   const outageCost = ((owTicket + owFnb) / (3 * 14 * 60)) * 0.65; // per-minute revenue × booking share at peak
 
   return (
     <div>
-      <StatusStrip kicker="Year-end season · Kaiju → Avengers" title="Blockbuster Watch" />
+      <StatusStrip kicker="Year-end season · Kaiju → Avengers" title="Blockbuster Watch" icon={<FilmIcon size={26} />} />
 
       <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", marginBottom: 16 }}>
         {films.map((f) => {
@@ -54,7 +61,10 @@ export const Blockbusters = () => {
                 </div>
                 <div style={{ marginTop: 14 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 6 }}>
-                    <span style={{ color: brand.gold, fontWeight: 600 }}>{f.combo.name}</span>
+                    <span style={{ color: brand.gold, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      <PopcornIcon size={15} />
+                      {f.combo.name}
+                    </span>
                   </div>
                   <Bar value={sell} color={sell > 0.7 ? brand.crit : brand.gold} />
                   <div className="muted num" style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginTop: 4 }}>
@@ -73,8 +83,46 @@ export const Blockbusters = () => {
         })}
       </div>
 
+      <Section
+        icon={<SeatIcon />}
+        iconColor={brand.red}
+        title="Tonight's hottest sessions"
+        subtitle="Live seat maps — blue seats are guests in checkout right now, the revenue a slow seat map or payment step can lose"
+        source={sources.merchandising}
+        style={{ marginBottom: 16 }}
+      >
+        <div className="grid halves">
+          {sessions.map((sn) => (
+            <div key={sn.title} style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${brand.line}`, borderRadius: 14, padding: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 10 }}>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <IconBadge icon={<FilmIcon size={18} />} color={sn.accent} size={36} />
+                  <div>
+                    <div style={{ fontWeight: 700 }}>{sn.title}</div>
+                    <div className="muted" style={{ fontSize: 12 }}>
+                      {sn.hall} · {sn.time} MYT · Kuala Lumpur City Centre
+                    </div>
+                  </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div className="num" style={{ fontSize: 22, fontWeight: 900, color: sn.accent }}>
+                    {pct(sn.occupancy, 0)}
+                  </div>
+                  <div className="faint" style={{ fontSize: 11 }}>
+                    sold
+                  </div>
+                </div>
+              </div>
+              <SeatMap occupancy={sn.occupancy} seed={sn.seed} accent={sn.accent} held={sn.held} />
+            </div>
+          ))}
+        </div>
+      </Section>
+
       <div className="grid halves" style={{ marginBottom: 16 }}>
         <Section
+          icon={<RocketIcon />}
+          iconColor={brand.red}
           title="Avengers: Doomsday — opening-night readiness"
           subtitle={`Booking transactions per minute · opens ${readiness.date}`}
           source={sources.tech === "live" ? "modelled" : "demo"}
@@ -116,14 +164,16 @@ export const Blockbusters = () => {
         </Section>
 
         <Section
+          icon={<TrendUpIcon />}
+          iconColor={brand.gold}
           title="Opening-weekend outlook"
           subtitle="Projection from pre-sales pace (pre-sales ≈ 35% of an event film's opening weekend)"
           source={sources.merchandising}
         >
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 12 }}>
-            <Big label="Admissions" value={n(owAdmissions)} />
-            <Big label="Ticket revenue" value={rm(owTicket)} color={brand.red} />
-            <Big label="F&B revenue" value={rm(owFnb)} color={brand.gold} />
+            <Big label="Admissions" value={n(owAdmissions)} icon={<TicketIcon size={15} />} />
+            <Big label="Ticket revenue" value={rm(owTicket)} color={brand.red} icon={<MoneyIcon size={15} />} />
+            <Big label="F&B revenue" value={rm(owFnb)} color={brand.gold} icon={<PopcornIcon size={15} />} />
           </div>
           <div style={{ display: "grid", gap: 10, marginTop: 18 }}>
             <div className="insight">
@@ -148,7 +198,7 @@ export const Blockbusters = () => {
         </Section>
       </div>
 
-      <Section title="Format preference by title" subtitle="Where to put the big screens" source={sources.merchandising}>
+      <Section icon={<FilmIcon />} iconColor={brand.info} title="Format preference by title" subtitle="Where to put the big screens" source={sources.merchandising}>
         <div className="scroll-x">
           <table className="boc-table">
             <thead>
@@ -210,10 +260,13 @@ function Stat({ label, value, color }: { label: string; value: string; color?: s
   );
 }
 
-function Big({ label, value, color }: { label: string; value: string; color?: string }) {
+function Big({ label, value, color, icon }: { label: string; value: string; color?: string; icon?: React.ReactNode }) {
   return (
     <div style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${brand.line}`, borderRadius: 12, padding: 14 }}>
-      <div className="eyebrow">{label}</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="eyebrow">{label}</div>
+        {icon && <IconBadge icon={icon} color={color ?? brand.info} size={28} />}
+      </div>
       <div className="num" style={{ fontSize: 24, fontWeight: 900, marginTop: 6, color: color ?? brand.text }}>
         {value}
       </div>

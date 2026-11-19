@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { IconBadge, channelIcon, kpiIcon, obsTabIcon } from "../components/icons";
+import { ClockIcon, ContainerIcon, CriticalIcon, AiIcon, HostsIcon, LogsIcon, NodeGraphIcon, ObservabilitySignetIcon, ServiceLevelObjectivesIcon, SyntheticMonitoringSignetIcon, UserSessionsIcon } from "@dynatrace/strato-icons";
 import { useCinema } from "../data/CinemaData";
 import { latencyLoss, type ObsModel } from "../data/observability";
 import { brand } from "../theme";
@@ -19,6 +21,15 @@ const TABS = [
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
 
+const CHANNEL_ID: Record<string, string> = {
+  "Online Booking": "booking",
+  "Seat Map & Sessions": "seatmap",
+  Payments: "payments",
+  "F&B Mobile Pre-order": "fnb",
+  "Loyalty & Rewards": "loyalty",
+  "Self-service Kiosks": "kiosk",
+};
+
 const ms = (v: number) => (v >= 1000 ? `${(v / 1000).toFixed(2)} s` : `${Math.round(v)} ms`);
 
 export const Observability = () => {
@@ -30,7 +41,7 @@ export const Observability = () => {
 
   return (
     <div>
-      <StatusStrip kicker="Observability · aligned to the box office" title="Observability" />
+      <StatusStrip kicker="Observability · aligned to the box office" title="Observability" icon={<ObservabilitySignetIcon size={26} />} />
 
       {/* ---------- Hero ---------- */}
       <div
@@ -68,7 +79,7 @@ export const Observability = () => {
         </div>
       </div>
 
-      <Section title="From business KPI to the signal behind it" subtitle="Each row is a board-level KPI, the telemetry that drives it, and a one-click drilldown into Dynatrace">
+      <Section icon={<NodeGraphIcon />} iconColor={brand.info} title="From business KPI to the signal behind it" subtitle="Each row is a board-level KPI, the telemetry that drives it, and a one-click drilldown into Dynatrace">
         <div className="scroll-x">
           <table className="boc-table">
             <thead>
@@ -87,7 +98,7 @@ export const Observability = () => {
                 <tr key={r.kpi}>
                   <td style={{ fontWeight: 700, whiteSpace: "nowrap" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                      <HealthDot health={r.status} size={9} />
+                      <IconBadge icon={kpiIcon(r.kpi, 15)} color={healthColor(r.status)} size={28} />
                       {r.kpi}
                     </span>
                   </td>
@@ -133,7 +144,10 @@ export const Observability = () => {
               cursor: "pointer",
             }}
           >
-            {t.label}
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+              {obsTabIcon[t.id]}
+              {t.label}
+            </span>
           </button>
         ))}
       </div>
@@ -153,7 +167,9 @@ export const Observability = () => {
 function ServicesTab({ obs }: { obs: ObsModel }) {
   return (
     <Section
-      title="Golden signals & SLOs per guest-journey channel"
+      icon={<ServiceLevelObjectivesIcon />}
+          iconColor={brand.ok}
+          title="Golden signals & SLOs per guest-journey channel"
       subtitle="Traffic, errors and p95 latency (24h) with a 7-day availability SLO and remaining error budget"
       source={obs.sources.services}
       right={<DrillLink target={drill.slo()} label="SLOs app" />}
@@ -185,10 +201,10 @@ function ServicesTab({ obs }: { obs: ObsModel }) {
                 <tr key={s.channel + s.name}>
                   <td>
                     <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <HealthDot health={s.status} size={8} />
+                      <IconBadge icon={channelIcon(CHANNEL_ID[s.channel] ?? "", 14)} color={healthColor(s.status)} size={26} />
                       <b>{s.channel}</b>
                     </div>
-                    <div className="faint" style={{ fontSize: 11, paddingLeft: 16, maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={s.name}>
+                    <div className="faint" style={{ fontSize: 11, paddingLeft: 34, maxWidth: 280, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={s.name}>
                       {s.name}
                     </div>
                   </td>
@@ -237,7 +253,7 @@ function ServicesTab({ obs }: { obs: ObsModel }) {
 function InfraTab({ obs }: { obs: ObsModel }) {
   return (
     <div className="grid halves">
-      <Section title="Host saturation" subtitle="CPU (peak, 2h) and memory for the hosts running guest-facing services" source={obs.sources.infra} right={<DrillLink target={drill.host()} label="Infrastructure" />}>
+      <Section icon={<HostsIcon />} iconColor={brand.warn} title="Host saturation" subtitle="CPU (peak, 2h) and memory for the hosts running guest-facing services" source={obs.sources.infra} right={<DrillLink target={drill.host()} label="Infrastructure" />}>
         <div style={{ display: "grid", gap: 10 }}>
           {obs.hosts.map((h) => (
             <div
@@ -276,7 +292,7 @@ function InfraTab({ obs }: { obs: ObsModel }) {
         </div>
       </Section>
 
-      <Section title="Kubernetes workload health" subtitle="Pods running vs not running, by namespace" source={obs.sources.k8s} right={<DrillLink target={drill.k8s()} label="Kubernetes" />}>
+      <Section icon={<ContainerIcon />} iconColor={brand.info} title="Kubernetes workload health" subtitle="Pods running vs not running, by namespace" source={obs.sources.k8s} right={<DrillLink target={drill.k8s()} label="Kubernetes" />}>
         <table className="boc-table">
           <thead>
             <tr>
@@ -353,7 +369,7 @@ function LogsTab({ obs }: { obs: ObsModel }) {
   const avg = obs.logTrend.reduce((s, x) => s + x.err, 0) / Math.max(1, obs.logTrend.length);
   return (
     <div className="grid two">
-      <Section title="Error log volume, last 24 hours" subtitle="Spikes here usually show up minutes before guests see checkout errors" source={obs.sources.logs} right={<DrillLink target={drill.logs(obs.logQuery)} label="Logs app" />}>
+      <Section icon={<LogsIcon />} iconColor={brand.crit} title="Error log volume, last 24 hours" subtitle="Spikes here usually show up minutes before guests see checkout errors" source={obs.sources.logs} right={<DrillLink target={drill.logs(obs.logQuery)} label="Logs app" />}>
         <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 180, padding: "0 4px" }}>
           {obs.logTrend.map((x) => (
             <div
@@ -375,7 +391,7 @@ function LogsTab({ obs }: { obs: ObsModel }) {
           <span>{obs.logTrend.length ? hm(obs.logTrend[obs.logTrend.length - 1].ts) : ""}</span>
         </div>
       </Section>
-      <Section title="Top error sources (2h)" subtitle="Where the noise is coming from, with a sample message" source={obs.sources.logs}>
+      <Section icon={<CriticalIcon />} iconColor={brand.crit} title="Top error sources (2h)" subtitle="Where the noise is coming from, with a sample message" source={obs.sources.logs}>
         <div style={{ display: "grid", gap: 10 }}>
           {obs.logSources.map((l) => {
             const q = `fetch logs\n| filter loglevel == "ERROR" and dt.process.name == "${l.process.replace(/"/g, '\\"')}"\n| sort timestamp desc`;
@@ -417,7 +433,7 @@ function ProblemsTab({ obs, incidents }: { obs: ObsModel; incidents: ReturnType<
   const weeklyCost = obs.mttr.reduce((s, m) => s + m.count * m.costPerIncident, 0);
   return (
     <div className="grid halves">
-      <Section title="Mean time to resolve → cost of downtime" subtitle="Closed Davis problems, last 7 days" source={obs.sources.problems} right={<DrillLink target={drill.problem()} label="Problems app" />}>
+      <Section icon={<ClockIcon />} iconColor={brand.warn} title="Mean time to resolve → cost of downtime" subtitle="Closed Davis problems, last 7 days" source={obs.sources.problems} right={<DrillLink target={drill.problem()} label="Problems app" />}>
         <table className="boc-table">
           <thead>
             <tr>
@@ -463,7 +479,7 @@ function ProblemsTab({ obs, incidents }: { obs: ObsModel; incidents: ReturnType<
         </div>
       </Section>
 
-      <Section title="Problems in the last 24 hours" subtitle="Click through to Davis root-cause analysis" source={obs.sources.problems}>
+      <Section icon={<AiIcon />} iconColor={brand.crit} title="Problems in the last 24 hours" subtitle="Click through to Davis root-cause analysis" source={obs.sources.problems}>
         <div style={{ display: "grid", gap: 8 }}>
           {incidents.slice(0, 8).map((i) => (
             <div
@@ -498,7 +514,9 @@ function RumTab({ obs, bookingRevPerHour }: { obs: ObsModel; bookingRevPerHour: 
   const vital = (v: number, good: number, poor: number): Health => (v <= good ? "healthy" : v <= poor ? "degraded" : "critical");
   return (
     <Section
-      title="Real user experience — Core Web Vitals & Apdex"
+      icon={<UserSessionsIcon />}
+          iconColor={brand.info}
+          title="Real user experience — Core Web Vitals & Apdex"
       subtitle="How fast the booking website and apps feel to guests"
       source={obs.sources.rum}
       right={<DrillLink target={drill.vitals()} label="Experience Vitals" />}
@@ -561,7 +579,9 @@ function RumTab({ obs, bookingRevPerHour }: { obs: ObsModel; bookingRevPerHour: 
 function SyntheticTab({ obs }: { obs: ObsModel }) {
   return (
     <Section
-      title="Synthetic monitoring — booking journeys from Malaysian cities"
+      icon={<SyntheticMonitoringSignetIcon />}
+          iconColor={brand.ok}
+          title="Synthetic monitoring — booking journeys from Malaysian cities"
       subtitle="Scripted 'book a ticket' and 'pre-order popcorn' journeys run every minute, even when no guests are online"
       source={obs.sources.synthetic}
       right={<DrillLink target={drill.synthetic()} label="Synthetic app" />}

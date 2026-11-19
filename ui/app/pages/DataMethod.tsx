@@ -1,4 +1,6 @@
 import React from "react";
+import { FilmIcon, GaugeIcon, IconBadge } from "../components/icons";
+import { BusinessAnalyticsSignetIcon, GrailIcon, SettingIcon } from "@dynatrace/strato-icons";
 import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { StatusStrip } from "../components/StatusStrip";
@@ -36,7 +38,7 @@ export const DataMethod = () => {
   const { model, assumptions } = useCinema();
   return (
     <div>
-      <StatusStrip kicker="Transparency" title="Data & Method" />
+      <StatusStrip kicker="Transparency" title="Data & Method" icon={<GrailIcon size={26} />} />
 
       <div className="grid thirds" style={{ marginBottom: 16 }}>
         <ModeCard
@@ -57,7 +59,7 @@ export const DataMethod = () => {
       </div>
 
       <div className="grid halves" style={{ marginBottom: 16 }}>
-        <Section title="Where each view gets its data" subtitle={`Currently: ${model.mode === "live" ? "Live mode" : "Demo mode"}`}>
+        <Section icon={<GrailIcon />} iconColor={brand.info} title="Where each view gets its data" subtitle={`Currently: ${model.mode === "live" ? "Live mode" : "Demo mode"}`}>
           <table className="boc-table">
             <tbody>
               <Row label="Revenue, admissions, F&B" src={model.sources.revenue} />
@@ -85,7 +87,7 @@ export const DataMethod = () => {
           </div>
         </Section>
 
-        <Section title="Current business assumptions" subtitle="Edit with the ⚙ button in the header">
+        <Section icon={<SettingIcon />} iconColor={brand.gold} title="Current business assumptions" subtitle="Edit with the ⚙ button in the header">
           <table className="boc-table">
             <tbody>
               <tr>
@@ -118,7 +120,9 @@ export const DataMethod = () => {
       </div>
 
       <Section
-        title="Make revenue exact: send cinema business events"
+        icon={<BusinessAnalyticsSignetIcon />}
+          iconColor={brand.ok}
+          title="Make revenue exact: send cinema business events"
         subtitle="Send these from the booking and F&B services (OneAgent business-event capture, OpenPipeline or the Business Events API). The app picks them up automatically."
       >
         <div className="grid halves">
@@ -133,7 +137,14 @@ export const DataMethod = () => {
 function ModeCard({ tag, title, body }: { tag: "live" | "modelled" | "demo"; title: string; body: string }) {
   return (
     <div className="card">
-      <SourceTag source={tag} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <SourceTag source={tag} />
+        <IconBadge
+          icon={tag === "live" ? <GrailIcon size={20} /> : tag === "modelled" ? <GaugeIcon size={20} /> : <FilmIcon size={20} />}
+          color={tag === "live" ? brand.ok : tag === "modelled" ? brand.info : brand.gold}
+          size={40}
+        />
+      </div>
       <h3 style={{ fontSize: 18, marginTop: 10 }}>{title}</h3>
       <p className="muted" style={{ fontSize: 13, marginTop: 6, lineHeight: 1.5 }}>
         {body}

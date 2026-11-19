@@ -1,9 +1,12 @@
 import React from "react";
+import { IconBadge, categoryIcon, channelIcon } from "../components/icons";
+import { AiIcon, MoneyIcon, ServicesIcon, WarningIcon } from "@dynatrace/strato-icons";
+import { FilmIcon, PopcornIcon, ShieldCheckIcon, TicketIcon, TrendUpIcon } from "../components/icons";
 import { Link } from "react-router-dom";
 import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { StatusStrip } from "../components/StatusStrip";
-import { Kpi, Legend, Section, HealthDot, healthColor } from "../components/ui";
+import { Kpi, Legend, Section, healthColor } from "../components/ui";
 import { Donut, RevenueByHourChart } from "../components/charts";
 import { daysUntil, duration, hm, n, pct, rm, signedPct } from "../components/format";
 import { FilmPoster } from "../components/FilmPoster";
@@ -22,7 +25,7 @@ export const Overview = () => {
 
   return (
     <div>
-      <StatusStrip kicker="Today · Malaysia" title="Executive Overview" />
+      <StatusStrip kicker="Today · Malaysia" title="Executive Overview" icon={<TrendUpIcon size={26} />} />
 
       {/* ---------- Hero ---------- */}
       <div className="grid two" style={{ marginBottom: 16 }}>
@@ -105,24 +108,28 @@ export const Overview = () => {
       {/* ---------- KPIs ---------- */}
       <div className="grid kpis" style={{ marginBottom: 16 }}>
         <Kpi
+          icon={<MoneyIcon />} spark={model.hourly.filter((h) => !h.forecast).map((h) => h.ticket + h.fnb)}
           label="Gross revenue"
           value={rm(kpis.grossRevenue)}
           delta={{ text: `${signedPct(kpis.vsLastWeek)} WoW`, good: kpis.vsLastWeek >= 0 }}
         />
         <Kpi
+          icon={<TrendUpIcon />}
           label="Est. gross profit"
           value={rm(kpis.grossProfit)}
           sub={`${pct(kpis.grossProfit / (kpis.grossRevenue || 1), 0)} blended margin`}
           accent={brand.ok}
         />
-        <Kpi label="Admissions" value={n(kpis.admissions)} sub={`${pct(kpis.occupancy, 0)} occupancy`} accent={brand.info} />
+        <Kpi icon={<TicketIcon />} label="Admissions" value={n(kpis.admissions)} sub={`${pct(kpis.occupancy, 0)} occupancy`} accent={brand.info} />
         <Kpi
+          icon={<PopcornIcon />}
           label="F&B spend per head"
           value={rm(kpis.spendPerHead, { compact: false, decimals: 2 })}
           sub={`${pct(kpis.attachRate, 0)} attach rate`}
           accent={brand.gold}
         />
         <Kpi
+          icon={<WarningIcon />}
           label="Revenue at risk"
           value={rm(kpis.revenueAtRisk)}
           sub={`${active.length} active incident${active.length === 1 ? "" : "s"}`}
@@ -130,6 +137,7 @@ export const Overview = () => {
           hint="Revenue exposed to digital incidents today: duration × revenue per minute × impact of incident type"
         />
         <Kpi
+          icon={<ShieldCheckIcon />}
           label="Digital success rate"
           value={pct(kpis.bookingSuccess, 2)}
           sub="booking, payment & ordering"
@@ -140,6 +148,8 @@ export const Overview = () => {
       {/* ---------- Revenue chart + mix ---------- */}
       <div className="grid two" style={{ marginBottom: 16 }}>
         <Section
+          icon={<TrendUpIcon />}
+          iconColor={brand.red}
           title="Revenue by hour"
           subtitle="Tickets and F&B stacked, against the same day last week. Hatched bars are forecast."
           source={sources.revenue}
@@ -157,7 +167,7 @@ export const Overview = () => {
           </div>
         </Section>
 
-        <Section title="Revenue vs profit mix" subtitle="Where the money is actually made" source={sources.revenue}>
+        <Section icon={<MoneyIcon />} iconColor={brand.gold} title="Revenue vs profit mix" subtitle="Where the money is actually made" source={sources.revenue}>
           <div style={{ display: "flex", gap: 18, alignItems: "center", justifyContent: "space-around", flexWrap: "wrap" }}>
             <MixDonut
               label="Revenue"
@@ -190,6 +200,8 @@ export const Overview = () => {
       {/* ---------- Channels + impact ---------- */}
       <div className="grid halves" style={{ marginBottom: 16 }}>
         <Section
+          icon={<ServicesIcon />}
+          iconColor={brand.info}
           title="Digital channel health"
           subtitle="The guest journey from browse to popcorn"
           source={sources.tech}
@@ -205,7 +217,7 @@ export const Overview = () => {
                 key={c.id + c.backedBy}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "18px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)",
+                  gridTemplateColumns: "34px minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr)",
                   alignItems: "center",
                   gap: 10,
                   padding: "9px 4px",
@@ -213,7 +225,7 @@ export const Overview = () => {
                   fontSize: 13,
                 }}
               >
-                <HealthDot health={c.health} />
+                <IconBadge icon={channelIcon(c.id, 16)} color={healthColor(c.health)} size={30} />
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontWeight: 600 }}>{c.name}</div>
                   <div className="faint" style={{ fontSize: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -234,7 +246,7 @@ export const Overview = () => {
           </div>
         </Section>
 
-        <Section title="Business impact feed" subtitle="Incidents translated into ringgit" source={sources.tech}>
+        <Section icon={<AiIcon />} iconColor={brand.crit} title="Business impact feed" subtitle="Incidents translated into ringgit" source={sources.tech}>
           {model.incidents.length === 0 && <p className="muted">No problems detected in the last 24 hours. 🎬</p>}
           <div style={{ display: "grid", gap: 10 }}>
             {model.incidents.slice(0, 5).map((i) => (
@@ -252,6 +264,7 @@ export const Overview = () => {
               >
                 <div style={{ minWidth: 0 }}>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <IconBadge icon={categoryIcon(i.category, 14)} color={i.status === "ACTIVE" ? brand.crit : brand.faint} size={26} />
                     <span
                       className="pill"
                       style={{
@@ -287,7 +300,9 @@ export const Overview = () => {
 
       {/* ---------- Slate strip ---------- */}
       <Section
-        title="This season's slate"
+        icon={<FilmIcon />}
+          iconColor={brand.red}
+          title="This season's slate"
         subtitle="Kaiju now, Avengers next — the year-end blockbuster run"
         source={sources.merchandising}
         right={
