@@ -1,0 +1,17 @@
+{
+  "$schema": "./.dt-app/app.config.schema.json",
+  "environmentUrl": "https://rha75589.apps.dynatrace.com/",
+  "app": {
+    "name": "Box Office Command",
+    "version": "1.0.0",
+    "description": "Blockbuster-season command centre for cinema executives: ticket and F&B revenue, digital channel health and revenue at risk, with a built-in demo mode.",
+    "id": "my.box.office.command",
+    "scopes": [
+      { "name": "storage:metrics:read", "comment": "Service request volume, failures and response time" },
+      { "name": "storage:events:read", "comment": "Davis problems for revenue-at-risk" },
+      { "name": "storage:bizevents:read", "comment": "Cinema ticket and F&B business events" },
+      { "name": "storage:entities:read", "comment": "Resolve service names" },
+      { "name": "storage:buckets:read", "comment": "Read Grail buckets" }
+    ]
+  }
+}
