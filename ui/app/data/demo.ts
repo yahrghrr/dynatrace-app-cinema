@@ -537,7 +537,7 @@ export function buildDemoModel(now: number, a: Assumptions): CinemaModel {
       revenue: "demo",
       tech: "demo",
       merchandising: "demo",
-      note: "Demo mode — a synthetic 11-site Malaysian cinema chain. No tenant data is used.",
+      note: "Demo mode — Layar Cinemas, a fictional 11-site Malaysian cinema chain. No tenant data is used.",
     },
     kpis,
     hourly,

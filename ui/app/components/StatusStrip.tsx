@@ -3,6 +3,7 @@ import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { hm } from "./format";
 import { SourceTag } from "./ui";
+import { LayarLockup } from "./Logo";
 
 export function StatusStrip({ title, kicker }: { title: string; kicker: string }) {
   const { model, mode, liveLoading, fellBack, liveError, setMode } = useCinema();
@@ -10,6 +11,9 @@ export function StatusStrip({ title, kicker }: { title: string; kicker: string }
     <div style={{ marginBottom: 18 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 16, flexWrap: "wrap" }}>
         <div>
+          <div style={{ marginBottom: 14 }}>
+            <LayarLockup height={36} />
+          </div>
           <div className="eyebrow" style={{ color: brand.red }}>
             {kicker}
           </div>
