@@ -46,6 +46,8 @@ export interface Channel {
   purpose: string;
   /** The monitored entity behind this channel (real service name in live mode). */
   backedBy: string;
+  /** Real Dynatrace entity ID (live mode) for drilldown. */
+  entityId?: string;
   txPerMin: number;
   successRate: number;
   responseMs: number;
@@ -66,6 +68,8 @@ export interface Incident {
   durationMin: number;
   revenueAtRisk: number;
   businessImpact: string;
+  /** Davis problem event.id (live mode) for drilldown. */
+  eventId?: string;
 }
 
 export interface ThemedCombo {

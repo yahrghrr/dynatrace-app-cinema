@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { buildDemoModel } from "./demo";
 import { useLiveModel } from "./live";
+import { buildDemoObs, useLiveObs, type ObsModel } from "./observability";
 import { DEFAULT_ASSUMPTIONS, type Assumptions, type CinemaModel, type Mode } from "./types";
 
 interface Ctx {
   model: CinemaModel;
+  obs: ObsModel;
   /** What the user asked for. */
   mode: Mode;
   setMode: (m: Mode) => void;
@@ -60,9 +62,14 @@ export function CinemaDataProvider({ children }: { children: React.ReactNode }) 
 
   const fellBack = mode === "live" && !live.isLoading && (!!live.error || live.empty || !live.model);
   const model = mode === "live" && live.model && !live.empty ? live.model : demo;
+  const usingLive = model.mode === "live";
+  const liveObs = useLiveObs(usingLive, model);
+  const demoObs = useMemo(() => buildDemoObs(model), [model]);
+  const obs = usingLive && liveObs.obs ? liveObs.obs : demoObs;
 
   const value: Ctx = {
     model,
+    obs,
     mode,
     setMode,
     assumptions,

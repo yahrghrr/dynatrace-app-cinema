@@ -66,7 +66,18 @@ export const DataMethod = () => {
               <Row label="Film slate, sites, F&B items" src={model.sources.merchandising} />
             </tbody>
           </table>
+          <table className="boc-table" style={{ marginTop: 10 }}>
+            <tbody>
+              <Row label="Observability · services, SLOs, hosts, Kubernetes, logs, MTTR" src={model.mode === "live" ? "live" : "demo"} />
+              <Row label="Observability · real user experience & synthetic" src="demo" />
+            </tbody>
+          </table>
           <div className="insight" style={{ marginTop: 14 }}>
+            Every observability panel links into the standard Dynatrace apps (Problems, Services, Infrastructure &amp;
+            Operations, Kubernetes, Logs, Notebooks, SLOs, Synthetic, Experience Vitals) — in live mode, straight to the
+            exact problem, service, host or workload.
+          </div>
+          <div className="insight" style={{ marginTop: 10 }}>
             In live mode the six busiest monitored services are mapped, in order of volume, onto the six cinema channels
             (booking, seat map, payments, F&amp;B pre-order, loyalty, kiosks). Revenue at risk = problem duration × revenue per
             minute × impact of the problem type (availability 60%, error 30%, slowdown 12%…), reduced to 25% when the problem

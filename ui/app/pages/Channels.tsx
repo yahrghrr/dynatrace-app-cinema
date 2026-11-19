@@ -5,6 +5,7 @@ import { StatusStrip } from "../components/StatusStrip";
 import { HealthDot, Section, healthColor } from "../components/ui";
 import { Sparkline } from "../components/charts";
 import { duration, hm, n, pct, rm } from "../components/format";
+import { DrillLink, drill } from "../components/Drill";
 
 export const Channels = () => {
   const { model } = useCinema();
@@ -79,6 +80,9 @@ export const Channels = () => {
             >
               Monitored service: <span style={{ color: brand.muted }}>{c.backedBy}</span>
             </div>
+            <div style={{ marginTop: 6 }}>
+              <DrillLink target={drill.service(c.entityId)} label="Open service in Dynatrace" compact />
+            </div>
           </div>
         ))}
       </div>
@@ -95,12 +99,13 @@ export const Channels = () => {
                   <th>Started</th>
                   <th className="r">Duration</th>
                   <th className="r" style={{ whiteSpace: "nowrap" }}>At risk</th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
                 {incidents.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="muted">
+                    <td colSpan={7} className="muted">
                       No problems in the last 24 hours.
                     </td>
                   </tr>
@@ -124,6 +129,9 @@ export const Channels = () => {
                     <td className="r num" style={{ whiteSpace: "nowrap" }}>{duration(i.durationMin)}</td>
                     <td className="r num" style={{ fontWeight: 800, whiteSpace: "nowrap", color: i.revenueAtRisk > 1000 ? brand.crit : brand.text }}>
                       {rm(i.revenueAtRisk)}
+                    </td>
+                    <td className="r">
+                      <DrillLink target={drill.problem(i.eventId)} label="Davis" compact />
                     </td>
                   </tr>
                 ))}

@@ -11,6 +11,7 @@ food & beverage revenue, gross profit and revenue at risk**.
 | **Blockbuster Watch** | Slate performance (*Godzilla Minus Zero*, *Hunger Games*, *Jumanji 3*, *Avengers: Doomsday*, *Dune: Part Three*), themed collector-bucket sell-through, opening-night capacity readiness, the 18 Dec clash. |
 | **Food & Beverage** | Spend per head, attach rate, top items with margin, a site league table, order/payment mix and an **uplift simulator** (what +RM 1 SPH is worth per year). |
 | **Digital Channels** | Health of each guest-journey channel, Davis problems priced in ringgit, and the booking funnel. |
+| **Observability** | A **business impact map** that ties each board KPI (ticket conversion, payment completion, F&B spend per head, opening-night capacity, cost of downtime…) to the signal behind it, plus tabs for services & SLOs/error budgets, hosts & Kubernetes, logs, problems & MTTR, real user experience and synthetic monitoring. Every row drills into the standard Dynatrace app. |
 | **Data & Method** | Where every number comes from, the assumptions, and the business-event schema. |
 
 ## Data modes (toggle in the header)
@@ -19,6 +20,10 @@ food & beverage revenue, gross profit and revenue at risk**.
   volume × business assumptions, or is **live** when the tenant sends `cinema.ticket.purchase` / `cinema.fnb.order` business events.
 - **Demo**: A synthetic Malaysian cinema chain with realistic evening demand curves. No tenant data needed.
   Live mode falls back to demo automatically if queries fail or there is no service traffic.
+
+**Drilldowns:** links use Dynatrace intents to open Problems (Davis root cause), Services, Infrastructure & Operations,
+Kubernetes, Logs, Notebooks, SLOs, Synthetic and Experience Vitals in context. In live mode they target the exact
+problem, service, host or workload; in demo mode they open the app's landing page.
 
 Each panel carries a **Live / Modelled / Demo** badge, so nobody mistakes a model for a measurement.
 Business assumptions (ticket price, SPH, margins, scaling) can be edited from the ⚙ button.

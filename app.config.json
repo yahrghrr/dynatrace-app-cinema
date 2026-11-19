@@ -3,7 +3,7 @@
   "environmentUrl": "https://rha75589.apps.dynatrace.com/",
   "app": {
     "name": "Box Office Command",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Cinema box office, F&B revenue and digital health command centre",
     "id": "my.box.office.command",
     "scopes": [
@@ -11,7 +11,8 @@
       { "name": "storage:events:read", "comment": "Davis problems for revenue-at-risk" },
       { "name": "storage:bizevents:read", "comment": "Cinema ticket and F&B business events" },
       { "name": "storage:entities:read", "comment": "Resolve service names" },
-      { "name": "storage:buckets:read", "comment": "Read Grail buckets" }
+      { "name": "storage:buckets:read", "comment": "Read Grail buckets" },
+      { "name": "storage:logs:read", "comment": "Error log trends and top error sources" }
     ]
   }
 }

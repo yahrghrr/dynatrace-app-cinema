@@ -8,6 +8,7 @@ import { Blockbusters } from "./pages/Blockbusters";
 import { Concessions } from "./pages/Concessions";
 import { Channels } from "./pages/Channels";
 import { DataMethod } from "./pages/DataMethod";
+import { Observability } from "./pages/Observability";
 import { brand, globalCss } from "./theme";
 
 export const App = () => {
@@ -25,6 +26,7 @@ export const App = () => {
               <Route path="/blockbusters" element={<Blockbusters />} />
               <Route path="/concessions" element={<Concessions />} />
               <Route path="/channels" element={<Channels />} />
+              <Route path="/observability" element={<Observability />} />
               <Route path="/data" element={<DataMethod />} />
             </Routes>
           </div>

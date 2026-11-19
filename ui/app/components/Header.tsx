@@ -12,6 +12,7 @@ const NAV = [
   { to: "/blockbusters", label: "Blockbuster Watch" },
   { to: "/concessions", label: "Food & Beverage" },
   { to: "/channels", label: "Digital Channels" },
+  { to: "/observability", label: "Observability" },
   { to: "/data", label: "Data & Method" },
 ];
 

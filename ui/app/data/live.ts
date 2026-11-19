@@ -90,7 +90,7 @@ export function useLiveModel(assumptions: Assumptions, enabled: boolean, now: nu
   const problems = useDql(
     `fetch dt.davis.problems, from:-24h
 | filter not(dt.davis.is_duplicate)
-| summarize {name=takeLast(event.name), status=takeLast(event.status), category=takeLast(event.category), start=takeLast(event.start), end=takeLast(event.end), affected=takeLast(affected_entity_ids), rootCause=takeLast(root_cause_entity_name)}, by:{display_id}
+| summarize {name=takeLast(event.name), status=takeLast(event.status), category=takeLast(event.category), start=takeLast(event.start), end=takeLast(event.end), affected=takeLast(affected_entity_ids), rootCause=takeLast(root_cause_entity_name), eventId=takeLast(event.id)}, by:{display_id}
 | sort start desc
 | limit 25`,
     opts,
@@ -182,6 +182,7 @@ export function useLiveModel(assumptions: Assumptions, enabled: boolean, now: nu
         name: slot.name,
         purpose: slot.purpose,
         backedBy: str(r.name) || str(r["dt.entity.service"]),
+        entityId: str(r["dt.entity.service"]),
         txPerMin: total / 120,
         successRate,
         responseMs,
@@ -207,6 +208,7 @@ export function useLiveModel(assumptions: Assumptions, enabled: boolean, now: nu
         const impact = (CATEGORY_IMPACT[category] ?? 0.05) * (mapped ? 1 : 0.25);
         return {
           id: str(r.display_id),
+          eventId: str(r.eventId) || undefined,
           title: str(r.name),
           status,
           category,

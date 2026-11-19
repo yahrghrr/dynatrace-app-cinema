@@ -7,6 +7,7 @@ import { Kpi, Legend, Section, HealthDot, healthColor } from "../components/ui";
 import { Donut, RevenueByHourChart } from "../components/charts";
 import { daysUntil, duration, hm, n, pct, rm, signedPct } from "../components/format";
 import { FilmPoster } from "../components/FilmPoster";
+import { DrillLink, drill } from "../components/Drill";
 
 export const Overview = () => {
   const { model } = useCinema();
@@ -216,7 +217,7 @@ export const Overview = () => {
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontWeight: 600 }}>{c.name}</div>
                   <div className="faint" style={{ fontSize: 11, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {c.backedBy}
+                    {c.backedBy} · <DrillLink target={drill.service(c.entityId)} label="Service" compact />
                   </div>
                 </div>
                 <div className="num" style={{ textAlign: "right", color: healthColor(c.successRate > 0.99 ? "healthy" : c.successRate > 0.97 ? "degraded" : "critical") }}>
@@ -276,6 +277,7 @@ export const Overview = () => {
                   <div className="faint" style={{ fontSize: 11 }}>
                     at risk
                   </div>
+                  <DrillLink target={drill.problem(i.eventId)} label="Root cause" compact />
                 </div>
               </div>
             ))}
