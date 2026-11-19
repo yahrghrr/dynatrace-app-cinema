@@ -1,7 +1,6 @@
 import React from "react";
 import { MoneyIcon } from "@dynatrace/strato-icons";
-import { SeatMap } from "../components/SeatMap";
-import { FilmIcon, IconBadge, PopcornIcon, RocketIcon, SeatIcon, TicketIcon, TrendUpIcon } from "../components/icons";
+import { FilmIcon, IconBadge, PopcornIcon, RocketIcon, TicketIcon, TrendUpIcon } from "../components/icons";
 import { useCinema } from "../data/CinemaData";
 import { brand } from "../theme";
 import { StatusStrip } from "../components/StatusStrip";
@@ -23,10 +22,6 @@ export const Blockbusters = () => {
   const owFnb = owAdmissions * assumptions.fnbSpendPerHead * 1.25;
   const collectorUplift = doomsday ? doomsday.combo.stock * doomsday.combo.price : 0;
   const capacityGap = readiness.expectedPeakTpm - readiness.testedCapacityTpm;
-  const sessions = [
-    { title: kaiju?.title ?? "Godzilla Minus Zero", hall: "IMAX Hall 1", time: "20:30", occupancy: Math.min(0.95, (kaiju?.occupancy ?? 0.7) + 0.12), seed: 7, accent: kaiju?.accent ?? brand.red, held: 0.07 },
-    { title: "The Hunger Games: Sunrise on the Reaping", hall: "Hall 4 · Recliners", time: "21:15", occupancy: 0.68, seed: 21, accent: "#FFB347", held: 0.05 },
-  ];
   const outageCost = ((owTicket + owFnb) / (3 * 14 * 60)) * 0.65; // per-minute revenue × booking share at peak
 
   return (
@@ -82,42 +77,6 @@ export const Blockbusters = () => {
           );
         })}
       </div>
-
-      <Section
-        icon={<SeatIcon />}
-        iconColor={brand.red}
-        title="Tonight's hottest sessions"
-        subtitle="Live seat maps — blue seats are guests in checkout right now, the revenue a slow seat map or payment step can lose"
-        source={sources.merchandising}
-        style={{ marginBottom: 16 }}
-      >
-        <div className="grid halves">
-          {sessions.map((sn) => (
-            <div key={sn.title} style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${brand.line}`, borderRadius: 14, padding: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 10 }}>
-                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                  <IconBadge icon={<FilmIcon size={18} />} color={sn.accent} size={36} />
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{sn.title}</div>
-                    <div className="muted" style={{ fontSize: 12 }}>
-                      {sn.hall} · {sn.time} MYT · Kuala Lumpur City Centre
-                    </div>
-                  </div>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div className="num" style={{ fontSize: 22, fontWeight: 900, color: sn.accent }}>
-                    {pct(sn.occupancy, 0)}
-                  </div>
-                  <div className="faint" style={{ fontSize: 11 }}>
-                    sold
-                  </div>
-                </div>
-              </div>
-              <SeatMap occupancy={sn.occupancy} seed={sn.seed} accent={sn.accent} held={sn.held} />
-            </div>
-          ))}
-        </div>
-      </Section>
 
       <div className="grid halves" style={{ marginBottom: 16 }}>
         <Section
