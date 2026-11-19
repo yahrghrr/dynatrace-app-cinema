@@ -4,7 +4,7 @@
   "app": {
     "name": "Box Office Command",
     "version": "1.0.0",
-    "description": "Blockbuster-season command centre for cinema executives: ticket and F&B revenue, digital channel health and revenue at risk, with a built-in demo mode.",
+    "description": "Cinema box office, F&B revenue and digital health command centre",
     "id": "my.box.office.command",
     "scopes": [
       { "name": "storage:metrics:read", "comment": "Service request volume, failures and response time" },
